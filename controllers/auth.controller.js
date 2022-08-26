@@ -52,12 +52,25 @@ exports.registration = async (req, res) => {
 
             const saveData = await authData.save();
 
+            const response = {
+                user_id: saveData._id,
+                profile: saveData.profile[0].res,
+                username: saveData.username,
+                age: saveData.age,
+                sex: saveData.sex,
+                vehicleType: saveData.vehicleType,
+                dailyKM: saveData.dailyKM,
+                email: saveData.email,
+                number: saveData.number,
+                password: saveData.password
+            }
+
             res.status(status.CREATED).json(
-                new APIResponse("User Register Successfully", true, 201, 1, saveData)
+                new APIResponse("User Register Successfully", true, 201, 1, response)
             )
         } else {
             res.status(status.CONFLICT).json(
-                new APIResponse("Email Already Exist", true, 409, 1)
+                new APIResponse("Email Already Exist", "false", 409, 1)
             )
         }
 
@@ -77,20 +90,35 @@ exports.login = async (req, res) => {
         let password = req.body.password;
 
         const getAuthData = await authModel.find({ email: email });
-        console.log("getAuthData:::", getAuthData.length);
 
         if (getAuthData.length == 0) {
             res.status(status.NOT_FOUND).json(
                 new APIResponse("Data Not Exist", "false", 404, "0", error.message)
             )
         } else {
-            if (getAuthData.password == password) {
-                res.status(status.UNAUTHORIZED).json(
-                    new APIResponse("Password Not Match", "false", 401, "0", error.message)
+            if (getAuthData[0].password == password) {
+
+                const getData = await authModel.find({ email: email });
+
+                const response = {
+                    user_id: getData[0]._id,
+                    profile: getData[0].profile[0].res,
+                    username: getData[0].username,
+                    age: getData[0].age,
+                    sex: getData[0].sex,
+                    vehicleType: getData[0].vehicleType,
+                    dailyKM: getData[0].dailyKM,
+                    email: getData[0].email,
+                    number: getData[0].number,
+                    password: getData[0].password
+                }
+
+                res.status(status.OK).json(
+                    new APIResponse("User Login Successfully", true, 200, 1, response)
                 )
             } else {
-                res.status(status.OK).json(
-                    new APIResponse("User Login Successfully", true, 200, 1)
+                res.status(status.UNAUTHORIZED).json(
+                    new APIResponse("Password Not Match", "false", 401, "0")
                 )
             }
         }
