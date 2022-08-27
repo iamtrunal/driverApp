@@ -2,7 +2,6 @@ const authModel = require("../models/auth.model");
 const cloudinary = require("../utils/cloudinary.utils");
 const status = require("http-status");
 const APIResponse = require("../helper/APIResponse");
-const { models } = require("mongoose");
 
 exports.registration = async (req, res) => {
     try {
@@ -51,6 +50,7 @@ exports.registration = async (req, res) => {
             });
 
             const saveData = await authData.save();
+            console.log("saveData",saveData.profile[0].res);
 
             const response = {
                 user_id: saveData._id,
@@ -68,6 +68,7 @@ exports.registration = async (req, res) => {
             res.status(status.CREATED).json(
                 new APIResponse("User Register Successfully", true, 201, 1, response)
             )
+
         } else {
             res.status(status.CONFLICT).json(
                 new APIResponse("Email Already Exist", "false", 409, 1)
@@ -76,7 +77,7 @@ exports.registration = async (req, res) => {
 
 
     } catch (error) {
-        console.log("Error:", error);
+        console.log("Error::", error);
         res.status(status.INTERNAL_SERVER_ERROR).json(
             new APIResponse("Something Went Wrong", "false", 500, "0", error.message)
         )
