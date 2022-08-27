@@ -10,6 +10,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // ---------- Define Routes Here ---------- //
 const authRouter = require("./routes/auth.routes");
+const chatRouter = require("./routes/chat.routes");
+
 app.use("/auth", authRouter);
+app.use("/chat", chatRouter);
 
 module.exports = app;
