@@ -47,6 +47,7 @@ exports.getChatByUserId = async (req, res) => {
 
                 const response = {
                     profile: getUserData.profile[0].res,
+                    chatRoomId: findChat1.chatRoomId,
                     username: getUserData.username,
                     message: getLastMessage.message,
                 }
@@ -77,6 +78,7 @@ exports.getChatByUserId = async (req, res) => {
 
                 const response = {
                     profile: getUserData.profile[0].res,
+                    chatRoomId: findChat2.findChat2,
                     username: getUserData.username,
                     message: getLastMessage2.message,
                 }
@@ -102,17 +104,13 @@ exports.getChatByUserId = async (req, res) => {
 exports.getAllChatData = async (req, res) => {
     try {
 
-        const findChatRoom = await chatRoom.findOne({
-            user1: req.body.user_id
+        const findChatRoom = await chatModel.findOne({
+            chatRoomId: req.body.chat_room_id
         });
         console.log("findChatRoom::", findChatRoom);
 
-        const findChatRoom2 = await chatRoom.findOne({
-            user2: req.body.user_id
-        })
-        console.log("findChatRoom2::", findChatRoom2);
 
-        if (findChatRoom == null && findChatRoom2 == null) {
+        if(findChatRoom == null) {
 
             res.status(status.NOT_FOUND).json(
                 new APIResponse("Data Not Exist", "false", 404, "0")
@@ -120,35 +118,51 @@ exports.getAllChatData = async (req, res) => {
 
         } else {
 
-            if (findChatRoom) {
-
-                const findChat1 = await chatModel.findOne(
-                    {
-                        chatRoomId: findChatRoom._id
-                    }
-                );
-                console.log("findChat1::", findChat1);
-
-                res.status(status.OK).json(
-                    new APIResponse("Get All Chat Details By UserId", true, 200, 1, findChat1)
-                )
-
-            } else {
-
-                const findChat2 = await chatModel.findOne(
-                    {
-                        chatRoomId: findChatRoom2._id
-                    }
-                );
-                console.log("findChat2::", findChat2);
-
-                res.status(status.OK).json(
-                    new APIResponse("Get All Chat Details By UserId", true, 200, 1, findChat2)
-                )
-
-            }
+            res.status(status.OK).json(
+                new APIResponse("Get All Chat Details By UserId", true, 200, 1, findChatRoom)
+            )
 
         }
+
+
+
+        // if (findChatRoom == null && findChatRoom2 == null) {
+
+        //     res.status(status.NOT_FOUND).json(
+        //         new APIResponse("Data Not Exist", "false", 404, "0")
+        //     )
+
+        // } else {
+
+        //     if (findChatRoom) {
+
+        //         const findChat1 = await chatModel.findOne(
+        //             {
+        //                 chatRoomId: findChatRoom._id
+        //             }
+        //         );
+        //         console.log("findChat1::", findChat1);
+
+        //         res.status(status.OK).json(
+        //             new APIResponse("Get All Chat Details By UserId", true, 200, 1, findChat1)
+        //         )
+
+        //     } else {
+
+        //         const findChat2 = await chatModel.findOne(
+        //             {
+        //                 chatRoomId: findChatRoom2._id
+        //             }
+        //         );
+        //         console.log("findChat2::", findChat2);
+
+        //         res.status(status.OK).json(
+        //             new APIResponse("Get All Chat Details By UserId", true, 200, 1, findChat2)
+        //         )
+
+        //     }
+
+        // }
 
     } catch (error) {
 
