@@ -94,7 +94,7 @@ exports.login = async (req, res) => {
 
         if (getAuthData.length == 0) {
             res.status(status.NOT_FOUND).json(
-                new APIResponse("Data Not Exist", "false", 404, "0", error.message)
+                new APIResponse("Data Not Exist", "false", 404, "0")
             )
         } else {
             if (getAuthData[0].password == password) {

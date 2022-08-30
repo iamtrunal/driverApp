@@ -1,0 +1,12 @@
+# joinUser
+{
+    "user_id": "630dd4b90578c17364b8157a"
+}
+
+
+# chat
+{
+    "receiver_id": "630dd4b90578c17364b8157a",
+    "sender_id": "630dd6e56f1c372cab1dfca7",
+    "message": "Hello!"
+}

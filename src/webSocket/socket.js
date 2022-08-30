@@ -161,6 +161,15 @@ function socket(io) {
                             )
                             console.log("updateChat..");
 
+                            const getChatData = await chatModel.findOne(
+                                {
+                                    chatRoomId: getChatRoom._id
+                                }
+                            )
+                            console.log("getChatData::",getChatData);
+
+                            io.to(userRoom).emit("chatReceive", getChatData)
+
                         }
 
 
@@ -208,6 +217,15 @@ function socket(io) {
                                 }
                             )
                             console.log("updateChatElse..");
+
+                            const getChatData2 = await chatModel.findOne(
+                                {
+                                    chatRoomId: getChatRoom2._id
+                                }
+                            )
+                            console.log("getChatData2::",getChatData2);
+
+                            io.to(userRoom).emit("chatReceive", getChatData2)
 
                         }
 
