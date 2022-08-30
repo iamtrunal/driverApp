@@ -44,6 +44,7 @@ exports.getChatByUserId = async (req, res) => {
                             chatRoomId: getLastMsg._id
                         }
                     ).lean();
+                    console.log("findChat1::",findChat1);
 
                     const chatMessage = findChat1.chat;
                     const getLastMessage = chatMessage[chatMessage.length - 1];
@@ -81,6 +82,7 @@ exports.getChatByUserId = async (req, res) => {
                             chatRoomId: getLastMsg2._id
                         }
                     ).lean();
+                    console.log("findChat2::",findChat2);
 
                     const chatMessage2 = findChat2.chat;
                     const getLastMessage2 = chatMessage2[chatMessage2.length - 1];
@@ -88,7 +90,7 @@ exports.getChatByUserId = async (req, res) => {
 
                     const lastMsgResponse2 = {
                         profile: getUserData2.profile[0].res,
-                        chatRoomId: findChat2.findChat2,
+                        chatRoomId: findChat2.chatRoomId,
                         username: getUserData2.username,
                         message: getLastMessage2.message,
                     }
