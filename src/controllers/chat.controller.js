@@ -44,7 +44,6 @@ exports.getChatByUserId = async (req, res) => {
                             chatRoomId: getLastMsg._id
                         }
                     ).lean();
-                    console.log("findChat1::",findChat1);
 
                     const chatMessage = findChat1.chat;
                     const getLastMessage = chatMessage[chatMessage.length - 1];
