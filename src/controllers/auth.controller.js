@@ -1,7 +1,6 @@
 const authModel = require("../models/auth.model");
 const cloudinary = require("../utils/cloudinary.utils");
 const status = require("http-status");
-const APIResponse = require("../helper/APIResponse");
 
 exports.registration = async (req, res) => {
     try {
@@ -50,7 +49,7 @@ exports.registration = async (req, res) => {
             });
 
             const saveData = await authData.save();
-            console.log("saveData",saveData.profile[0].res);
+            console.log("saveData", saveData.profile[0].res);
 
             const response = {
                 user_id: saveData._id,
@@ -66,12 +65,23 @@ exports.registration = async (req, res) => {
             }
 
             res.status(status.CREATED).json(
-                new APIResponse("User Register Successfully", true, 201, 1, response)
+                {
+                    message: "User Register Successfully",
+                    status: true,
+                    code: 201,
+                    statusCode: 1,
+                    data: response
+                }
             )
 
         } else {
             res.status(status.CONFLICT).json(
-                new APIResponse("Email Already Exist", "false", 409, 1)
+                {
+                    message: "Email Already Exist",
+                    status: false,
+                    code: 409,
+                    statusCode: 0
+                }
             )
         }
 
@@ -79,7 +89,13 @@ exports.registration = async (req, res) => {
     } catch (error) {
         console.log("Error::", error);
         res.status(status.INTERNAL_SERVER_ERROR).json(
-            new APIResponse("Something Went Wrong", "false", 500, "0", error.message)
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
         )
     }
 }
@@ -94,7 +110,12 @@ exports.login = async (req, res) => {
 
         if (getAuthData.length == 0) {
             res.status(status.NOT_FOUND).json(
-                new APIResponse("Data Not Exist", "false", 404, "0")
+                {
+                    message: "Data Not Exist",
+                    status: false,
+                    code: 404,
+                    statusCode: 0
+                }
             )
         } else {
             if (getAuthData[0].password == password) {
@@ -115,11 +136,22 @@ exports.login = async (req, res) => {
                 }
 
                 res.status(status.OK).json(
-                    new APIResponse("User Login Successfully", true, 200, 1, response)
+                    {
+                        message: "User Login Successfully",
+                        status: true,
+                        code: 200,
+                        statusCode: 1,
+                        data: response
+                    }
                 )
             } else {
                 res.status(status.UNAUTHORIZED).json(
-                    new APIResponse("Password Not Match", "false", 401, "0")
+                    {
+                        message: "Password Not Match",
+                        status: false,
+                        code: 401,
+                        statusCode: 0
+                    }
                 )
             }
         }
@@ -127,7 +159,13 @@ exports.login = async (req, res) => {
     } catch (error) {
         console.log("Error:", error);
         res.status(status.INTERNAL_SERVER_ERROR).json(
-            new APIResponse("Something Went Wrong", "false", 500, "0", error.message)
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
         )
     }
 }
@@ -143,13 +181,25 @@ exports.all_user = async (req, res) => {
         const getAllData = await authModel.find().skip(startIndex).limit(endIndex);
 
         res.status(status.OK).json(
-            new APIResponse("User Login Successfully", true, 200, 1, getAllData)
+            {
+                message: "User Login Successfully",
+                status: true,
+                code: 200,
+                statusCode: 1,
+                data: getAllData
+            }
         )
 
     } catch (error) {
         console.log("Error:", error);
         res.status(status.INTERNAL_SERVER_ERROR).json(
-            new APIResponse("Something Went Wrong", "false", 500, "0", error.message)
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
         )
     }
 }

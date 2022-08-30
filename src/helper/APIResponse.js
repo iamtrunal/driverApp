@@ -4,7 +4,7 @@ class APIResponse {
             this.message = message
         }
         if (status) {
-            this.status = status
+            this.status = false
         }
         if (code) {
             this.code = code

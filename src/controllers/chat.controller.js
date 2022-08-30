@@ -1,7 +1,6 @@
 const chatModel = require("../webSocket/models/chat.model");
 const chatRoom = require("../webSocket/models/chatRoom.model");
 const authModel = require("../models/auth.model");
-const APIResponse = require("../helper/APIResponse");
 const status = require("http-status");
 
 exports.getChatByUserId = async (req, res) => {
@@ -20,7 +19,12 @@ exports.getChatByUserId = async (req, res) => {
         if (findChatRoom.length == 0 && findChatRoom2.length == 0) {
 
             res.status(status.NOT_FOUND).json(
-                new APIResponse("Data Not Exist", "false", 404, "0")
+                {
+                    message: "Data Not Exist",
+                    status: false,
+                    code: 404,
+                    statusCode: 0
+                }
             )
 
         }
@@ -60,7 +64,13 @@ exports.getChatByUserId = async (req, res) => {
                 }
 
                 res.status(status.OK).json(
-                    new APIResponse("Get Chat Details By UserId", true, 200, 1, response)
+                    {
+                        message: "Get Chat Details By UserId",
+                        status: true,
+                        code: 200,
+                        statusCode: 1,
+                        data: response
+                    }
                 )
 
             } else {
@@ -81,7 +91,7 @@ exports.getChatByUserId = async (req, res) => {
                             chatRoomId: getLastMsg2._id
                         }
                     ).lean();
-                    console.log("findChat2::",findChat2);
+                    console.log("findChat2::", findChat2);
 
                     const chatMessage2 = findChat2.chat;
                     const getLastMessage2 = chatMessage2[chatMessage2.length - 1];
@@ -97,7 +107,13 @@ exports.getChatByUserId = async (req, res) => {
                 }
 
                 res.status(status.OK).json(
-                    new APIResponse("Get Chat Details By UserId", true, 200, 1, response2)
+                    {
+                        message: "Get Chat Details By UserId",
+                        status: true,
+                        code: 200,
+                        statusCode: 1,
+                        data: response2
+                    }
                 )
 
             }
@@ -108,7 +124,13 @@ exports.getChatByUserId = async (req, res) => {
 
         console.log("Error:", error);
         res.status(status.INTERNAL_SERVER_ERROR).json(
-            new APIResponse("Something Went Wrong", "false", 500, "0", error.message)
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
         )
 
     }
@@ -126,13 +148,24 @@ exports.getAllChatData = async (req, res) => {
         if (findChatRoom == null) {
 
             res.status(status.NOT_FOUND).json(
-                new APIResponse("Data Not Exist", "false", 404, "0")
+                {
+                    message: "Data Not Exist",
+                    status: false,
+                    code: 404,
+                    statusCode: 0
+                }
             )
 
         } else {
 
             res.status(status.OK).json(
-                new APIResponse("Get All Chat Details By UserId", true, 200, 1, findChatRoom)
+                {
+                    message: "Get All Chat Details By UserId",
+                    status: true,
+                    code: 200,
+                    statusCode: 1,
+                    data: findChatRoom
+                }
             )
 
         }
@@ -181,7 +214,13 @@ exports.getAllChatData = async (req, res) => {
 
         console.log("Error:", error);
         res.status(status.INTERNAL_SERVER_ERROR).json(
-            new APIResponse("Something Went Wrong", "false", 500, "0", error.message)
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
         )
 
     }
