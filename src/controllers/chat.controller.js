@@ -2,6 +2,8 @@ const chatModel = require("../webSocket/models/chat.model");
 const chatRoom = require("../webSocket/models/chatRoom.model");
 const authModel = require("../models/auth.model");
 const status = require("http-status");
+const mongoose = require("mongoose");
+const objectId = mongoose.Schema.Types.ObjectId;
 
 exports.getChatByUserId = async (req, res) => {
     try {
@@ -209,6 +211,88 @@ exports.getAllChatData = async (req, res) => {
         //     }
 
         // }
+
+    } catch (error) {
+
+        console.log("Error:", error);
+        res.status(status.INTERNAL_SERVER_ERROR).json(
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
+        )
+
+    }
+}
+
+exports.readChat = async (req, res) => {
+    try {
+
+        const getChatRoom = await chatModel.findOne(
+            {
+                chatRoomId: req.body.chat_room_id,
+                "chat.sender": req.body.sender_id
+            }
+        );
+        console.log("getChatRoom::", getChatRoom);
+
+        if (getChatRoom == null) {
+
+            res.status(status.NOT_FOUND).json(
+                {
+                    message: "Data Not Exist",
+                    status: false,
+                    code: 404,
+                    statusCode: 0
+                }
+            )
+
+        } else {
+
+            for (const getSenderChat of getChatRoom.chat) {
+
+                if ((getSenderChat.sender).toString() == (req.body.sender_id).toString()) {
+
+                    const updateReadValue = await chatModel.updateOne(
+                        {
+                            chatRoomId: req.body.chat_room_id,
+                            chat: {
+                                $elemMatch: {
+                                    sender: mongoose.Types.ObjectId(req.body.sender_id)
+                                }
+                            }
+                        },
+                        {
+                            $set: {
+                                "chat.$[chat].read": 0
+                            }
+                        },
+                        {
+                            arrayFilters: [
+                                {
+                                    'chat.sender': mongoose.Types.ObjectId(req.body.sender_id)
+                                }
+                            ]
+                        }
+                    );
+
+                }
+
+            }
+
+            res.status(status.OK).json(
+                {
+                    message: "This chat has been read",
+                    status: true,
+                    code: 200,
+                    statusCode: 1
+                }
+            )
+
+        }
 
     } catch (error) {
 
