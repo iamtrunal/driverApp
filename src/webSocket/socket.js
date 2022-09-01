@@ -1,5 +1,6 @@
 const chatRoom = require("./models/chatRoom.model");
 const chatModel = require("./models/chat.model");
+const mongoose = require("mongoose");
 
 function socket(io) {
     console.log("SETUP :- Socket Loading....");

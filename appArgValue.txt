@@ -11,3 +11,10 @@
     "message": "Hello!"
 }
 -- emit :- chatReceive
+
+# readUnread
+{
+    "chat_room_id": "630ddd680578c17364b8157f",
+    "sender_id": "630dd4b90578c17364b8157a"
+}
+-- emit :- readChat
