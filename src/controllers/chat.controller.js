@@ -9,16 +9,14 @@ exports.getChatByUserId = async (req, res) => {
     try {
 
         const findChatRoom = await chatRoom.find({
-            user1: req.body.user_id
-        }).lean();
-        console.log("findChatRoom::", findChatRoom.length);
+            $or: [{
+                user1: req.body.user_id
+            }, {
+                user2: req.body.user_id
+            }]
+        });
 
-        const findChatRoom2 = await chatRoom.find({
-            user2: req.body.user_id
-        }).lean();
-        console.log("findChatRoom2::", findChatRoom2.length);
-
-        if (findChatRoom.length == 0 && findChatRoom2.length == 0) {
+        if (findChatRoom[0] == undefined) {
 
             res.status(status.NOT_FOUND).json(
                 {
@@ -29,96 +27,51 @@ exports.getChatByUserId = async (req, res) => {
                 }
             )
 
-        }
-        else {
+        } else {
 
-            if (findChatRoom.length > 0) {
+            const response = [];
+            for (const findChatRoomId of findChatRoom) {
 
-                const response = [];
-                for (const getLastMsg of findChatRoom) {
+                const getChatRoom = await chatModel.findOne(
+                    {
+                        chatRoomId: findChatRoomId._id
+                    }
+                );
 
-                    console.log("getLastMessage::", getLastMsg._id);
+                if (getChatRoom) {
 
                     const getUserData = await authModel.findOne(
                         {
-                            _id: getLastMsg.user1
+                            _id: req.body.user_id
                         }
-                    ).lean();
+                    );
 
-                    const findChat1 = await chatModel.findOne(
-                        {
-                            chatRoomId: getLastMsg._id
-                        }
-                    ).lean();
-
-                    const chatMessage = findChat1.chat;
+                    const chatMessage = getChatRoom.chat;
                     const getLastMessage = chatMessage[chatMessage.length - 1];
                     console.log("getLastMessage:::", getLastMessage.message);
 
                     const lastMsgResponse = {
                         profile: getUserData.profile[0].res,
-                        chatRoomId: findChat1.chatRoomId,
+                        chatRoomId: getChatRoom.chatRoomId,
                         username: getUserData.username,
                         message: getLastMessage.message,
+                        read: getLastMessage.read
                     }
-                    response.push(lastMsgResponse)
+                    response.push(lastMsgResponse);
 
                 }
-
-                res.status(status.OK).json(
-                    {
-                        message: "Get Chat Details By UserId",
-                        status: true,
-                        code: 200,
-                        statusCode: 1,
-                        data: response
-                    }
-                )
-
-            } else {
-
-                const response2 = [];
-                for (const getLastMsg2 of findChatRoom2) {
-
-                    console.log("getLastMessage::", getLastMsg2._id);
-
-                    const getUserData2 = await authModel.findOne(
-                        {
-                            _id: getLastMsg2.user2
-                        }
-                    ).lean();
-
-                    const findChat2 = await chatModel.findOne(
-                        {
-                            chatRoomId: getLastMsg2._id
-                        }
-                    ).lean();
-                    console.log("findChat2::", findChat2);
-
-                    const chatMessage2 = findChat2.chat;
-                    const getLastMessage2 = chatMessage2[chatMessage2.length - 1];
-                    console.log("getLastMessage2:::", getLastMessage2.message);
-
-                    const lastMsgResponse2 = {
-                        profile: getUserData2.profile[0].res,
-                        chatRoomId: findChat2.chatRoomId,
-                        username: getUserData2.username,
-                        message: getLastMessage2.message,
-                    }
-                    response2.push(lastMsgResponse2)
-                }
-
-                res.status(status.OK).json(
-                    {
-                        message: "Get Chat Details By UserId",
-                        status: true,
-                        code: 200,
-                        statusCode: 1,
-                        data: response2
-                    }
-                )
 
             }
+
+            res.status(status.OK).json(
+                {
+                    message: "Get Chat Details By UserId",
+                    status: true,
+                    code: 200,
+                    statusCode: 1,
+                    data: response
+                }
+            )
 
         }
 

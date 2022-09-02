@@ -1,20 +1,25 @@
 # joinUser
 {
-    "user_id": "630dd4b90578c17364b8157a"
+    "user_id": "6310a2a1031f8230e6327692"
 }
 
 
 # chat
 {
-    "receiver_id": "630dd4b90578c17364b8157a",
-    "sender_id": "630dd6e56f1c372cab1dfca7",
+    "receiver_id": "6310a360031f8230e6327698",
+    "sender_id": "6310a2f0031f8230e6327695",
     "message": "Hello!"
 }
 -- emit :- chatReceive
 
 # readUnread
 {
-    "chat_room_id": "630ddd680578c17364b8157f",
-    "sender_id": "630dd4b90578c17364b8157a"
+    "chat_room_id": "631197eee9329b2fd2efef88",
+    "sender_id": "6310a2a1031f8230e6327692"
 }
 -- emit :- readChat
+
+== userDetails ==
+user1: 6310a2a1031f8230e6327692
+user2: 6310a2f0031f8230e6327695
+user3: 6310a360031f8230e6327698
