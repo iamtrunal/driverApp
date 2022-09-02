@@ -50,12 +50,20 @@ exports.getChatByUserId = async (req, res) => {
                     const getLastMessage = chatMessage[chatMessage.length - 1];
                     console.log("getLastMessage:::", getLastMessage.message);
 
+                    var count = 0;
+                    for (const getReadCount of chatMessage) {
+                        
+                        count = count + getReadCount.read;
+                        console.log("chatCount:",count);
+
+                    }
+
                     const lastMsgResponse = {
                         profile: getUserData.profile[0].res,
                         chatRoomId: getChatRoom.chatRoomId,
                         username: getUserData.username,
                         message: getLastMessage.message,
-                        read: getLastMessage.read
+                        unreadMessage: count
                     }
                     response.push(lastMsgResponse);
 
