@@ -1,6 +1,9 @@
 const authModel = require("../models/auth.model");
+const chatRoom = require("../webSocket/models/chatRoom.model")
 const cloudinary = require("../utils/cloudinary.utils");
 const status = require("http-status");
+const mongoose = require("mongoose");
+const objectId = mongoose.Schema.Types.ObjectId;
 
 exports.registration = async (req, res) => {
     try {
@@ -173,12 +176,119 @@ exports.login = async (req, res) => {
 exports.all_user = async (req, res) => {
     try {
 
+        let userId = req.body.user_id;
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        const getAllData = await authModel.find().skip(startIndex).limit(endIndex);
+        const getAllData = await authModel.find({ _id: { $ne: userId } }).skip(startIndex).limit(endIndex).select('-__v');
+        // console.log("getAllData::", getAllData._id);
+
+        const chatRoomId = [];
+        for (const getChatRoomId of getAllData) {
+
+            var finalChatId = "";
+            finalChatId = await chatRoom.find(
+                {
+                    user1: getChatRoomId._id,
+                    user2: userId,
+                }
+            );
+
+            console.log("finalChatId",finalChatId.length);
+
+            if (finalChatId.length == 0) {
+                finalChatId = await chatRoom.find(
+                    {
+                        user2: getChatRoomId._id,
+                        user1: userId,
+                    }
+                );
+                console.log("2", userId, getChatRoomId._id,finalChatId._id);
+            }
+            else{
+                console.log("1", getChatRoomId._id,userId,finalChatId._id);
+            }
+
+            console.log("userId::", finalChatId[0] ? finalChatId[0]._id : "");
+
+            const response = {
+                _id: getChatRoomId._id,
+                chatRoom: finalChatId[0] ? finalChatId[0]._id : "",
+                profile: getChatRoomId.profile,
+                username: getChatRoomId.username,
+                age: getChatRoomId.age,
+                sex: getChatRoomId.sex,
+                vehicleType: getChatRoomId.vehicleType,
+                dailyKM: getChatRoomId.dailyKM,
+                email: getChatRoomId.email,
+                number: getChatRoomId.number,
+                password: getChatRoomId.password
+            }
+            chatRoomId.push(response)
+
+
+            // const findChatRoom = await chatRoom.find(
+            //     {
+            //         $or: [
+            //             {
+            //                 user1: userId
+            //             },
+            //             {
+            //                 user2: userId
+            //             }
+            //         ]
+            //     }
+            // );
+
+
+
+            // console.log("findChatRoom::",findChatRoom);
+
+            // for (const chatRoomIdData of findChatRoom) {
+            //     console.log("chatRoomIdData::", chatRoomIdData);
+            // }
+
+
+
+            /*if (userId == getChatRoomId._id) {
+
+                const response = {
+                    _id: getChatRoomId._id,
+                    chatRoom: finalChatId._id,
+                    profile: getChatRoomId.profile,
+                    username: getChatRoomId.username,
+                    age: getChatRoomId.age,
+                    sex: getChatRoomId.sex,
+                    vehicleType: getChatRoomId.vehicleType,
+                    dailyKM: getChatRoomId.dailyKM,
+                    email: getChatRoomId.email,
+                    number: getChatRoomId.number,
+                    password: getChatRoomId.password
+                }
+                chatRoomId.push(response)
+
+            } else {
+
+                const response = {
+                    _id: getChatRoomId._id,
+                    chatRoom: "",
+                    profile: getChatRoomId.profile,
+                    username: getChatRoomId.username,
+                    age: getChatRoomId.age,
+                    sex: getChatRoomId.sex,
+                    vehicleType: getChatRoomId.vehicleType,
+                    dailyKM: getChatRoomId.dailyKM,
+                    email: getChatRoomId.email,
+                    number: getChatRoomId.number,
+                    password: getChatRoomId.password
+                }
+                chatRoomId.push(response)
+
+            }*/
+
+        }
 
         res.status(status.OK).json(
             {
@@ -186,7 +296,7 @@ exports.all_user = async (req, res) => {
                 status: true,
                 code: 200,
                 statusCode: 1,
-                data: getAllData
+                data: chatRoomId
             }
         )
 
