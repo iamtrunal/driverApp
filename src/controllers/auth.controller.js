@@ -203,3 +203,36 @@ exports.all_user = async (req, res) => {
         )
     }
 }
+
+exports.viewById = async (req, res) => {
+    try {
+
+        const findUserById = await authModel.findById(
+            {
+                _id: req.params.id
+            }
+        ).select('-__v');
+
+        res.status(status.OK).json(
+            {
+                message: "User Login Successfully",
+                status: true,
+                code: 200,
+                statusCode: 1,
+                data: findUserById
+            }
+        )
+
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(status.INTERNAL_SERVER_ERROR).json(
+            {
+                message: "Something Went Wrong",
+                status: false,
+                code: 500,
+                statusCode: 0,
+                error: error.message
+            }
+        )
+    }
+}

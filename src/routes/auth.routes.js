@@ -5,10 +5,12 @@ const {
     registration,
     login,
     all_user,
+    viewById,
 } = require("../controllers/auth.controller");
 
 router.post("/register", upload.array('profile'), registration);
 router.post("/login", login);
 router.get("/all-user", all_user);
+router.get("/view-by-id/:id", viewById)
 
 module.exports = router;
