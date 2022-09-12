@@ -37,30 +37,47 @@ exports.getChatByUserId = async (req, res) => {
                         chatRoomId: findChatRoomId._id
                     }
                 );
+                console.log("getChatRoom::", getChatRoom);
 
                 if (getChatRoom) {
 
+                    const getChatRoomData = await chatRoom.findOne(
+                        {
+                            _id: getChatRoom.chatRoomId
+                        }
+                    )
+
+                    var user_id = "";
+                    if (getChatRoomData.user1 == req.body.user_id) {
+                        user_id = getChatRoomData.user2;
+                    } else {
+                        user_id = getChatRoomData.user1;
+                    }
+
                     const getUserData = await authModel.findOne(
                         {
-                            _id: req.body.user_id
+                            _id: user_id
                         }
                     );
+                    console.log("getUserData::", getUserData);
 
                     const chatMessage = getChatRoom.chat;
+                    console.log("chatMessage", chatMessage);
                     const getLastMessage = chatMessage[chatMessage.length - 1];
-                    console.log("getLastMessage:::", getLastMessage.message);
+                    console.log("getLastMessage:::", getLastMessage);
 
                     var count = 0;
                     for (const getReadCount of chatMessage) {
-                        
+
                         count = count + getReadCount.read;
-                        console.log("chatCount:",count);
+                        // console.log("chatCount:",count);
 
                     }
 
                     const lastMsgResponse = {
-                        profile: getUserData.profile[0].res,
+                        profile: getUserData.profile[0] ? getUserData.profile[0].res : "",
                         chatRoomId: getChatRoom.chatRoomId,
+                        receiverId: user_id,
                         username: getUserData.username,
                         message: getLastMessage.message,
                         unreadMessage: count

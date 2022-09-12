@@ -76,7 +76,13 @@ function socket(io) {
                         const saveChatData = await addDataInChat.save();
                         console.log("saveChatData::", saveChatData);
 
-                        io.to(userRoom).emit("chatReceive", saveChatData)
+                        const response = {
+                            sender: arg.sender_id,
+                            receiver: arg.receiver_id,
+                            message: arg.message
+                        }
+
+                        io.to(userRoom).emit("chatReceive", response)
 
                     } else {
 
@@ -93,7 +99,13 @@ function socket(io) {
                         const saveChatData = await addDataInChat.save();
                         console.log("saveChatData::", saveChatData);
 
-                        io.to(userRoom).emit("chatReceive", saveChatData)
+                        const response = {
+                            sender: arg.sender_id,
+                            receiver: arg.receiver_id,
+                            message: arg.message
+                        }
+
+                        io.to(userRoom).emit("chatReceive", response)
 
                     }
 
@@ -140,7 +152,13 @@ function socket(io) {
                             const saveChatData = await addDataInChat.save();
                             console.log("saveChatData::", saveChatData);
 
-                            io.to(userRoom).emit("chatReceive", saveChatData)
+                            const response = {
+                                sender: arg.sender_id,
+                                receiver: arg.receiver_id,
+                                message: arg.message
+                            }
+
+                            io.to(userRoom).emit("chatReceive", response)
 
                         } else {
 
@@ -169,7 +187,13 @@ function socket(io) {
                             )
                             console.log("getChatData::", getChatData);
 
-                            io.to(userRoom).emit("chatReceive", getChatData)
+                            const response = {
+                                sender: arg.sender_id,
+                                receiver: arg.receiver_id,
+                                message: arg.message
+                            }
+
+                            io.to(userRoom).emit("chatReceive", response)
 
                         }
 
@@ -197,7 +221,13 @@ function socket(io) {
                             const saveChatData = await addDataInChat.save();
                             console.log("saveChatData::", saveChatData);
 
-                            io.to(userRoom).emit("chatReceive", saveChatData)
+                            const response = {
+                                sender: arg.sender_id,
+                                receiver: arg.receiver_id,
+                                message: arg.message
+                            }
+
+                            io.to(userRoom).emit("chatReceive", response)
 
                         } else {
 
@@ -226,7 +256,13 @@ function socket(io) {
                             )
                             console.log("getChatData2::", getChatData2);
 
-                            io.to(userRoom).emit("chatReceive", getChatData2)
+                            const response = {
+                                sender: arg.sender_id,
+                                receiver: arg.receiver_id,
+                                message: arg.message
+                            }
+
+                            io.to(userRoom).emit("chatReceive", response)
 
                         }
 
